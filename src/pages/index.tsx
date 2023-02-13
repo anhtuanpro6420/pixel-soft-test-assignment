@@ -1,7 +1,7 @@
-import FooterContainer from "@Containers/Footer";
+import ConnectionContainer from "@Containers/Connection";
 
 const Home = () => {
-  return <FooterContainer />;
+  return <ConnectionContainer />;
 };
 
 export default Home;

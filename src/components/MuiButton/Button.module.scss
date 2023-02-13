@@ -1,0 +1,93 @@
+.button-basic {
+  color: #000000;
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 6px 8px;
+
+  &:hover {
+    color: #ffffff;
+    background: #000000;
+    border: 2px solid #000000;
+  }
+  &:disabled {
+    color: #a4a4a4;
+    background: #ffffff;
+    border: 1px solid #cecece;
+  }
+}
+
+.button-primary {
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 14px 16px;
+
+  &:hover {
+    background: #200e54;
+  }
+  &:disabled {
+    background: #e9d7f9;
+    //border: 2px solid #d1b2f4;
+  }
+}
+
+.button-danger {
+  background: #ff3131;
+  font-size: 14px;
+  &:hover {
+    background: #dc0a0a;
+  }
+}
+
+.button-text {
+  color: #532f91;
+  border-radius: 8px;
+  font-size: 14px;
+  &:hover {
+    color: #532f91;
+    background: #f6f1fb;
+  }
+}
+
+.button-link {
+  color: #000000;
+  font-size: 14px;
+  &:hover {
+    color: #532f91;
+    background: #f4f5f7;
+    border-radius: 3px;
+  }
+}
+
+.button-filter {
+  background: #ffffff;
+  color: #000000;
+  font-size: 14px;
+  border: 2px solid #a4a4a4;
+  border-radius: 8px;
+  &:hover {
+    border: 2px solid #532f91;
+    color: #532f91;
+    background: #ffffff;
+  }
+}
+
+.button-header {
+  color: #532F91;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 14px 16px;
+  @media (max-width: 768px) {
+    padding: 6px 8px;
+  }
+  &:hover {
+    color: #ffffff;
+    background: #532F91;
+    border: 2px solid #532F91;
+  }
+}
