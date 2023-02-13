@@ -1,17 +1,26 @@
 import AutoComplete, { IOptions } from "@Components/AutoComplete";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { useEffect, useState } from "react";
 import MuiButton from "@Components/MuiButton";
-import { fetchLocations } from "src/services/location.service";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import Typography from "@mui/material/Typography";
+import { getDistance } from "geolib";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { fetchConnections } from "src/services/connection.service";
+import { fetchLocations } from "src/services/location.service";
+import { v4 as uuidv4 } from "uuid";
+import * as Yup from "yup";
+import styles from "./Connection.module.scss";
 
 const ConnectionContainer = () => {
   const [startLocations, setStartLocations] = useState([]);
   const [endLocations, setEndLocations] = useState([]);
   const [startLocation, setStartLocation] = useState<IOptions | null>(null);
   const [endLocation, setEndLocation] = useState<IOptions | null>(null);
+  const [connections, setConnections] = useState([]);
 
   const getValidationRules = () => {
     return {
@@ -57,10 +66,77 @@ const ConnectionContainer = () => {
     const {
       data: { connections = [] },
     } = await fetchConnections({ from: startLocation?.label!, to: endLocation?.label! });
+    setConnections(connections);
+  };
+
+  const calculateDistance = ({ from, to }: { from: any; to: any }) => {
+    const distance = getDistance(
+      { latitude: from.location.coordinate.x, longitude: from.location.coordinate.y },
+      { latitude: to.location.coordinate.x, longitude: to.location.coordinate.y }
+    );
+    return distance;
+  };
+
+  const formatDate = (date: string) => {
+    if (date) {
+      return new Date(date).toLocaleString();
+    }
+  };
+
+  const renderConnections = () => {
+    return connections.map((connection: any) => {
+      return (
+        <Accordion key={uuidv4()}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <div className={styles["connection-item-container"]}>
+              <div className={styles["connection-item"]}>
+                <div>
+                  <div>{connection.from.location.name}</div>
+                  <div>{formatDate(connection.from.departure)}</div>
+                </div>
+                <div className={styles["arrow"]}>--------------&gt;</div>
+                <div>
+                  <div>{connection.to.location.name}</div>
+                  <div>{formatDate(connection.to.arrival)}</div>
+                </div>
+              </div>
+              <div className={styles["connection-item"]}>
+                Journey length: {calculateDistance({ from: connection.from, to: connection.to })}{" "}
+                meters
+              </div>
+              <div className={styles["connection-item"]}>
+                Number of stopovers: {connection.sections.length}
+              </div>
+            </div>
+          </AccordionSummary>
+          <AccordionDetails>
+            {connection.sections.map((section: any) => {
+              return (
+                <div className={styles["section-container"]} key={uuidv4()}>
+                  <Typography>
+                    <div>{section.departure.location.name}</div>
+                    <div>{formatDate(section.departure.departure)}</div>
+                  </Typography>
+                  <span>--------------&gt;</span>
+                  <Typography key={uuidv4()}>
+                    <div>{section.arrival.location.name}</div>
+                    <div>{formatDate(section.arrival.arrival)}</div>
+                  </Typography>
+                </div>
+              );
+            })}
+          </AccordionDetails>
+        </Accordion>
+      );
+    });
   };
 
   return (
-    <>
+    <div className={styles["wrapper"]}>
       <AutoComplete
         name="startLocation"
         control={control}
@@ -105,7 +181,8 @@ const ConnectionContainer = () => {
       >
         Find
       </MuiButton>
-    </>
+      {renderConnections()}
+    </div>
   );
 };
 
