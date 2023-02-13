@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useEffect, useState } from "react";
 import MuiButton from "@Components/MuiButton";
 import { fetchLocations } from "src/services/location.service";
+import { fetchConnections } from "src/services/connection.service";
 
 const ConnectionContainer = () => {
   const [startLocations, setStartLocations] = useState([]);
@@ -52,10 +53,10 @@ const ConnectionContainer = () => {
     setEndLocations(stations);
   };
 
-  const onSubmit = async (values: { startLocation: IOptions; endLocation: IOptions }) => {
-    console.log(values);
-    console.log(startLocation);
-    console.log(endLocation);
+  const onSubmit = async (values: any & { startLocation: IOptions; endLocation: IOptions }) => {
+    const {
+      data: { connections = [] },
+    } = await fetchConnections({ from: startLocation?.label!, to: endLocation?.label! });
   };
 
   return (
