@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+import * as Yup from "yup";
 import AutoComplete, { IOptions } from "@Components/AutoComplete";
 import MuiButton from "@Components/MuiButton";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -11,8 +13,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { fetchConnections } from "src/services/connection.service";
 import { fetchLocations } from "src/services/location.service";
-import { v4 as uuidv4 } from "uuid";
-import * as Yup from "yup";
 import styles from "./Connection.module.scss";
 
 const ConnectionContainer = () => {
@@ -34,18 +34,13 @@ const ConnectionContainer = () => {
       }),
     };
   };
-
-  const validationSchema = Yup.object().shape(getValidationRules());
   const {
     control,
-    setValue,
-    getValues,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     mode: "onChange",
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(Yup.object().shape(getValidationRules())),
   });
 
   const onStartLocationChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
