@@ -2,17 +2,26 @@ import AutoComplete, { IOptions } from "@Components/AutoComplete";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MuiButton from "@Components/MuiButton";
+import { fetchLocations } from "src/services/location.service";
 
 const ConnectionContainer = () => {
-  const [startLocation, setStartLocation] = useState<any>(null);
-  const [endLocation, setEndLocation] = useState<any>(null);
+  const [startLocations, setStartLocations] = useState([]);
+  const [endLocations, setEndLocations] = useState([]);
+  const [startLocation, setStartLocation] = useState<IOptions | null>(null);
+  const [endLocation, setEndLocation] = useState<IOptions | null>(null);
 
   const getValidationRules = () => {
     return {
-      startLocation: Yup.string().required("Please input start location"),
-      endLocation: Yup.string().required("Please input end location"),
+      startLocation: Yup.object().shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      }),
+      endLocation: Yup.object().shape({
+        label: Yup.string().required(),
+        value: Yup.string().required(),
+      }),
     };
   };
 
@@ -29,23 +38,24 @@ const ConnectionContainer = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const locations: any = [];
-
-  const onChangeTextField = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    // const { filterCategories } = querySearch;
-    // if (event?.target?.value && event?.target?.value.trim() && filterCategories.length < 4) {
-    //   dispatch(
-    //     kolSliceActions.setQuerySearch({
-    //       filterCategories,
-    //       textSearch: event?.target?.value.trim(),
-    //     })
-    //   );
-    // }
-    // call api
+  const onStartLocationChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      data: { stations },
+    } = await fetchLocations(event.target.value);
+    setStartLocations(stations);
   };
 
-  const onSubmit = async (values: any) => {
-    // call api
+  const onEndLocationChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      data: { stations },
+    } = await fetchLocations(event.target.value);
+    setEndLocations(stations);
+  };
+
+  const onSubmit = async (values: { startLocation: IOptions; endLocation: IOptions }) => {
+    console.log(values);
+    console.log(startLocation);
+    console.log(endLocation);
   };
 
   return (
@@ -56,15 +66,15 @@ const ConnectionContainer = () => {
         label="Start location"
         size="small"
         placeholder="Start location"
-        options={locations.map((e: any) => {
+        options={startLocations.map((e: any) => {
           return {
             label: e.name,
-            value: e._id,
+            value: e.id,
           };
         })}
-        onChangeTextField={onChangeTextField}
-        onSelectOptions={(value: IOptions) => {
-          setStartLocation(value.value);
+        onChangeTextField={onStartLocationChange}
+        onSelectOptions={(option: IOptions) => {
+          setStartLocation(option);
         }}
       />
       <AutoComplete
@@ -73,15 +83,15 @@ const ConnectionContainer = () => {
         label="End location"
         size="small"
         placeholder="End location"
-        options={locations.map((e: any) => {
+        options={endLocations.map((e: any) => {
           return {
             label: e.name,
-            value: e._id,
+            value: e.id,
           };
         })}
-        onChangeTextField={onChangeTextField}
-        onSelectOptions={(value: IOptions) => {
-          setEndLocation(value.value);
+        onChangeTextField={onEndLocationChange}
+        onSelectOptions={(option: IOptions) => {
+          setEndLocation(option);
         }}
       />
       <MuiButton
