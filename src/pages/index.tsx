@@ -1,7 +1,8 @@
+import React from "react";
 import ConnectionContainer from "@Containers/Connection";
 
-const Home = () => {
+function Home() {
   return <ConnectionContainer />;
-};
+}
 
 export default Home;

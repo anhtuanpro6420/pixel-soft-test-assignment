@@ -1,44 +1,51 @@
 import React, { memo, useMemo } from "react";
-import style from "./Button.module.scss";
 import { Button, ButtonProps } from "@mui/material";
+import style from "./Button.module.scss";
 
-type IProp = {
+type IProperty = {
   fixedWidth?: boolean;
   className?: string;
   typebutton?: string;
-  customStyles?: any;
+  customStyles?: Record<string, unknown>;
 };
 
-const MuiButton = ({
+function MuiButton({
   fixedWidth,
   className = "",
   disabled = false,
   customStyles = {},
-  ...props
-}: ButtonProps & IProp) => {
+  ...properties
+}: ButtonProps & IProperty) {
   const classStyle = useMemo(() => {
-    switch (props.typebutton) {
-      case "primary":
+    switch (properties.typebutton) {
+      case "primary": {
         return style["button-primary"];
-      case "danger":
+      }
+      case "danger": {
         return style["button-danger"];
-      case "text":
+      }
+      case "text": {
         return style["button-text"];
-      case "link":
+      }
+      case "link": {
         return style["button-link"];
-      case "filter":
+      }
+      case "filter": {
         return style["button-filter"];
-      case "header":
+      }
+      case "header": {
         return style["button-header"];
+      }
 
-      default:
+      default: {
         return style["button-basic"];
+      }
     }
-  }, [props.typebutton]);
+  }, [properties.typebutton]);
 
   return (
     <Button
-      {...props}
+      {...properties}
       disabled={disabled}
       className={`capitalize shadow-none ${className} ${classStyle} ${
         fixedWidth ? style["button-basic"] : ""
@@ -46,6 +53,13 @@ const MuiButton = ({
       style={{ ...customStyles }}
     />
   );
+}
+
+MuiButton.defaultProps = {
+  fixedWidth: false,
+  typebutton: "",
+  className: "",
+  customStyles: {},
 };
 
 export default memo(MuiButton);

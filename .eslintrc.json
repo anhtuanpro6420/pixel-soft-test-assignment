@@ -1,8 +1,58 @@
 {
-  "extends": ["next/core-web-vitals", "prettier"],
+  "extends": [
+    // Unicorn rules
+    "plugin:unicorn/recommended",
+    // ESLint recommendations
+    "eslint:recommended",
+    // TypeScript rules
+    "plugin:@typescript-eslint/recommended",
+    // AirBNB rules,
+    "airbnb",
+    // AirBNB TypeScript rules,
+    "airbnb-typescript",
+    // AirBNB React Hook rules,
+    "airbnb/hooks",
+    // React rules,
+    "plugin:react/recommended",
+    // React hooks rules,
+    "plugin:react-hooks/recommended",
+    // Accessibility rules
+    "plugin:jsx-a11y/recommended",
+    // Jest test rules
+    "plugin:jest/recommended",
+    // Jest test rules
+    "plugin:testing-library/react",
+    // NextJS rules,
+    "plugin:@next/next/recommended",
+    // Storybook rules,
+    "plugin:storybook/recommended",
+    // Overrides some ESLint rules that conflict with Prettier,
+    "prettier",
+    // Enables eslint-plugin-prettier and eslint-config-prettier.,
+    "plugin:prettier/recommended"
+  ],
   "rules": {
     "lines-between-class-members": 0,
     "eslint-disable-next-line react/display-name": 0,
-    "no-console": ["error", { "allow": ["warn", "error", "info", "log"] }]
-  }
+    "no-console": ["error", { "allow": ["warn", "error", "info", "log"] }],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "react/jsx-props-no-spreading": "off"
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking"
+      ],
+      "parserOptions": {
+        "project": ["./tsconfig.json"]
+      }
+    }
+  ]
 }

@@ -1,5 +1,5 @@
+import { buttonClasses } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
-import { buttonClasses, inputClasses } from "@mui/material";
 
 const theme = createTheme({
   typography: {

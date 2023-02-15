@@ -1,10 +1,16 @@
 import axios from "axios";
 
-export const fetchLocations = async (query: string = ""): Promise<Record<string, any>> => {
+const fetchLocations = async (
+  query = ""
+): Promise<{ data: { stations: Array<{ name: string; id: string }> } }> => {
   try {
-    return axios.get(`/api/locations?query=${query}`);
+    return await axios.get(`/api/locations?query=${query}`);
   } catch (error) {
     console.log(error);
     throw error;
   }
+};
+
+export default {
+  fetchLocations,
 };

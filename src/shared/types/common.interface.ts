@@ -1,5 +1,5 @@
 export interface IResponse {
   error?: boolean;
   message?: string;
-  data?: any;
+  data?: Record<string, unknown>;
 }

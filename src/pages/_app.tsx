@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-props-no-spreading */
+import React from "react";
+import { CssBaseline, StyledEngineProvider } from "@mui/material";
 import "@Styles/index.scss";
 import type { AppProps } from "next/app";
-import { CssBaseline, StyledEngineProvider, ThemeProvider } from "@mui/material";
-import theme from "../../mui.config";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

@@ -1,16 +1,21 @@
 import axios from "axios";
+import { IConnection } from "src/shared/types/connection.type";
 
-export const fetchConnections = async ({
-  from,
-  to,
+const fetchConnections = async ({
+  from = "",
+  to = "",
 }: {
   from: string;
   to: string;
-}): Promise<Record<string, any>> => {
+}): Promise<{ data: { connections: Array<IConnection> } }> => {
   try {
-    return axios.get(`/api/connections?from=${from}&to=${to}`);
+    return await axios.get(`/api/connections?from=${from}&to=${to}`);
   } catch (error) {
     console.log(error);
     throw error;
   }
+};
+
+export default {
+  fetchConnections,
 };
