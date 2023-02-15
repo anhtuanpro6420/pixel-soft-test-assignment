@@ -7,17 +7,20 @@
 .section-container {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .connection-item-container {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .connection-item {
     display: flex;
     width: 100%;
     margin-bottom: 10px;
+    justify-content: space-between;
 }
 
 .arrow {

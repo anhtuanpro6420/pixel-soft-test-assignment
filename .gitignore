@@ -44,3 +44,5 @@ docker-compose.yml
 ecosystem.config.js
 
 .idea
+
+next-env.d.ts

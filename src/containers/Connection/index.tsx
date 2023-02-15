@@ -8,7 +8,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import { getDistance } from "geolib";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import connectionService from "src/services/connection.service";
 import locationService from "src/services/location.service";
@@ -41,17 +41,17 @@ const formatDate = (date: string) => {
 function ConnectionContainer() {
   const [startLocations, setStartLocations] = useState<Array<{ name: string; id: string }>>([]);
   const [endLocations, setEndLocations] = useState<Array<{ name: string; id: string }>>([]);
-  const [startLocation, setStartLocation] = useState<IOptions>({
+  const [, setStartLocation] = useState<IOptions>({
     label: "",
     value: "",
   });
-  const [endLocation, setEndLocation] = useState<IOptions>({
+  const [, setEndLocation] = useState<IOptions>({
     label: "",
     value: "",
   });
   const [connections, setConnections] = useState<Array<IConnection>>([]);
 
-  const getValidationRules = () => {
+  const getValidationRules = useCallback(() => {
     return {
       startLocation: Yup.object().shape({
         label: Yup.string().required(),
@@ -62,7 +62,8 @@ function ConnectionContainer() {
         value: Yup.string().required(),
       }),
     };
-  };
+  }, []);
+
   const {
     control,
     handleSubmit,
@@ -102,7 +103,20 @@ function ConnectionContainer() {
     setConnections(connectionsFetched);
   };
 
-  const renderConnections = () => {
+  const renderLocationInfo = useCallback(({ name, time }) => {
+    return (
+      <Typography>
+        <div>{name}</div>
+        <div>{time}</div>
+      </Typography>
+    );
+  }, []);
+
+  const renderArrow = useCallback(() => {
+    return <div className={styles.arrow}>--------------&gt;</div>;
+  }, []);
+
+  const renderConnections = useCallback(() => {
     return connections.map((connection: IConnection) => {
       return (
         <Accordion key={uuidv4()}>
@@ -113,15 +127,15 @@ function ConnectionContainer() {
           >
             <div className={styles["connection-item-container"]}>
               <div className={styles["connection-item"]}>
-                <div>
-                  <div>{connection.from.location.name}</div>
-                  <div>{formatDate(connection.from.departure)}</div>
-                </div>
-                <div className={styles.arrow}>--------------&gt;</div>
-                <div>
-                  <div>{connection.to.location.name}</div>
-                  <div>{formatDate(connection.to.arrival)}</div>
-                </div>
+                {renderLocationInfo({
+                  name: connection.from.location.name,
+                  time: formatDate(connection.from.departure),
+                })}
+                {renderArrow()}
+                {renderLocationInfo({
+                  name: connection.to.location.name,
+                  time: formatDate(connection.to.arrival),
+                })}
               </div>
               <div className={styles["connection-item"]}>
                 Journey length: {calculateDistance({ from: connection.from, to: connection.to })}{" "}
@@ -136,15 +150,15 @@ function ConnectionContainer() {
             {connection.sections.map((section: ISection) => {
               return (
                 <div className={styles["section-container"]} key={uuidv4()}>
-                  <Typography>
-                    <div>{section.departure.location.name}</div>
-                    <div>{formatDate(section.departure.departure)}</div>
-                  </Typography>
-                  <span>--------------&gt;</span>
-                  <Typography key={uuidv4()}>
-                    <div>{section.arrival.location.name}</div>
-                    <div>{formatDate(section.arrival.arrival)}</div>
-                  </Typography>
+                  {renderLocationInfo({
+                    name: section.departure.location.name,
+                    time: formatDate(section.departure.departure),
+                  })}
+                  {renderArrow()}
+                  {renderLocationInfo({
+                    name: section.arrival.location.name,
+                    time: formatDate(section.arrival.arrival),
+                  })}
                 </div>
               );
             })}
@@ -152,7 +166,7 @@ function ConnectionContainer() {
         </Accordion>
       );
     });
-  };
+  }, [connections, renderArrow, renderLocationInfo]);
 
   return (
     <div className={styles.wrapper}>
